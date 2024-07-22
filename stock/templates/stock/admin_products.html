@@ -1,0 +1,24 @@
+{% extends "admin_base.html" %}
+{% block title %}Les Produits{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Produits disponibles</h2>
+    <ul class="list-group">
+        {% for product in products %}
+            <li class="list-group-item">
+                <strong>Désignation:</strong> {{ product.designation }} <br>
+                <strong>Quatite:</strong> {{ product.quantite }} <br>
+                <strong>Prix</strong> {{ product.prix }} <br>
+                <strong>cmup:</strong> {{ product.cmup }} <br>
+                <form method="post" action="{% url 'supprimer_produit' product.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </form>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Aucun produit trouvé.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

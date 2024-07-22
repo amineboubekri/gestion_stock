@@ -1,0 +1,14 @@
+{% extends "employe_base.html" %}
+
+{% block title %}Employe{% endblock %}
+
+{% block content %}
+    <h1 align="center">Bonjour Employe - {{ request.user.username }}</h1>
+    <div style="text-align: center;">
+        <a href="{% url 'logout' %}">Déconnexion</a>
+        <br><br>
+        <a href="{% url 'create_order' %}">Create Order</a>
+        <br>
+        <a href="{% url 'employee_orders' %}">View Orders</a>
+    </div>
+{% endblock %}

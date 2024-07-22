@@ -1,0 +1,21 @@
+{% extends "employe_base.html" %}
+{% block title %}Mes Commandes{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Mes Commandes</h2>
+    <ul class="list-group">
+        {% for order in orders %}
+            <li class="list-group-item">
+                <strong>Désignation:</strong> {{ order.designation }} <br>
+                <strong>Numéro de Commande:</strong> {{ order.num_ordre }} <br>
+                <strong>Quantite</strong> {{ order.quantite_commande }} <br>
+                <strong>Produit:</strong> {{ order.produit.designation }} <br>
+                <strong>Validation:</strong> {{ order.validation }}
+            </li>
+        {% empty %}
+            <li class="list-group-item">Aucune commande trouvée.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
