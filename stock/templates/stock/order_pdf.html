@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Order {{ order.num_ordre }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        strong {
+            color: #0056b3;
+        }
+        .order-details {
+            margin-top: 20px;
+        }
+        .order-details p {
+            margin: 5px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        td {
+            background-color: #fff;
+        }
+        .header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0056b3;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Order Details</h1>
+    <div class="order-details">
+        <p><strong>Order Number:</strong> {{ order.num_ordre }}</p>
+        <p><strong>Designation:</strong> {{ order.designation }}</p>
+        <p><strong>Product:</strong> {{ order.produit.designation }}</p>
+        <p><strong>Quantity Ordered:</strong> {{ order.quantite_commande }}</p>
+        <p><strong>Employee:</strong> {{ order.employe.username }}</p>
+        <p><strong>Validation Status:</strong> {{ order.validation }}</p>
+    </div>
+</body>
+</html>

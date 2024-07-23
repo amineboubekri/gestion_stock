@@ -11,6 +11,7 @@ urlpatterns = [
     path('magasinier_dashboard/', views.magasinier_dashboard, name='magasinier_dashboard'),
     path('ajouter_commande/', views.create_order, name='create_order'),
     path('employee_orders/', views.employee_orders, name='employee_orders'),  
+    path('commandes_history/', views.commandes_history, name='commandes_history'),  
     path('magasinier_liste_com/', views.magasinier_liste, name='magasinier_liste'), 
     path('valider_commande/<int:order_id>/', views.valider_commande, name='valider_commande'),
     path('refuser_commande/<int:order_id>/', views.refuser_commande, name='refuser_commande'),
@@ -21,5 +22,6 @@ urlpatterns = [
     path('modifier_commande/<int:order_id>/', views.modifier_commande, name='modifier_commande'),
     path('ajouter_stock/', views.ajouter_stock, name='ajouter_stock'),
     path('delete_product_admin/<int:product_id>/', views.supprimer_produit_admin, name='supprimer_produit_admin'),
+    path('order/<int:order_id>/pdf/', views.generate_order_pdf, name='generate_order_pdf'),
 
 ]

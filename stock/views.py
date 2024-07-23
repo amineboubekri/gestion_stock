@@ -2,8 +2,14 @@ from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm, CustomAuthenticationForm, CommandeForm, ProduitForm, CommandeUpdateForm, AjoutStockForm
+from .forms import CustomUserCreationForm, CustomAuthenticationForm, CommandeForm, ProduitForm, CommandeUpdateForm, AjoutStockForm, CommandeAvantValidation
 from .models import Commande, Produit, Entree
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph
 
 def login_register(request):
     if request.method == 'POST':
@@ -67,11 +73,22 @@ def create_order(request):
             order.validation = 'En attente'
             produit = order.produit
             quantite_commande = order.quantite_commande
-            
+
             if produit.quantite >= quantite_commande:
                 produit.quantite -= quantite_commande
                 produit.save()
                 order.save()
+
+                original_order = CommandeAvantValidation(
+                    designation=order.designation,
+                    num_ordre=order.num_ordre,
+                    validation=order.validation,
+                    produit=order.produit,
+                    employe=order.employe,
+                    quantite_commande=order.quantite_commande
+                )
+                original_order.save()
+
                 return redirect('employee_orders')
             else:
                 form.add_error('quantite_commande', 'Quantité commandée supérieure à la quantité disponible.')
@@ -79,6 +96,7 @@ def create_order(request):
         form = CommandeForm()
 
     return render(request, 'stock/ajouter_commande.html', {'form': form})
+
 
 @login_required
 def employee_orders(request):
@@ -89,6 +107,16 @@ def employee_orders(request):
     else:
         orders = Commande.objects.all()
     return render(request, 'stock/liste_commandes.html', {'orders': orders})
+
+@login_required
+def commandes_history(request):
+    if request.user.role != 'employe' and request.user.role != 'magasinier':
+        return redirect('home')
+    if request.user.role == 'employe':
+        orders = CommandeAvantValidation.objects.filter(employe=request.user)
+    else:
+        orders = CommandeAvantValidation.objects.all()
+    return render(request, 'stock/commandes_hisrory.html', {'orders': orders})
 
 @login_required
 def magasinier_liste(request):
@@ -198,3 +226,31 @@ def supprimer_produit_admin(request, product_id):
     produit = get_object_or_404(Produit, id=product_id)
     produit.delete()
     return redirect(reverse('admin_products'))
+
+@login_required
+def generate_order_pdf(request, order_id):
+    order = get_object_or_404(Commande, id=order_id)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="order_{order_id}.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=letter)
+
+    styles = getSampleStyleSheet()
+    title_style = styles['Title']
+    heading_style = ParagraphStyle(name='Heading', fontSize=14, spaceAfter=10)
+    normal_style = styles['BodyText']
+
+    content = []
+
+    content.append(Paragraph(f'Commande id {order_id}', title_style))
+    content.append(Paragraph(f'Commade Number: <b>{order.num_ordre}</b>', normal_style))
+    content.append(Paragraph(f'Designation: <b>{order.designation}</b>', normal_style))
+    content.append(Paragraph(f'Produit: <b>{order.produit.designation}</b>', normal_style))
+    content.append(Paragraph(f'Quantite <b>{order.quantite_commande}</b>', normal_style))
+    content.append(Paragraph(f'Employe: <b>{order.employe.username}</b>', normal_style))
+    content.append(Paragraph(f'Validation Statut: <b>{order.validation}</b>', normal_style))
+
+    doc.build(content)
+
+    return response

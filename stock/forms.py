@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import Personne, Commande, Produit, Entree
+from .models import Personne, Commande, Produit, Entree, CommandeAvantValidation
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -21,6 +21,14 @@ class CommandeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields.pop('validation', None)
 
+class CommandeAvantvalidationForm(forms.ModelForm):
+    class Meta:
+        model = CommandeAvantValidation
+        fields = ['designation', 'num_ordre', 'produit', 'quantite_commande']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields.pop('validation', None)
 
 class ProduitForm(forms.ModelForm):
     class Meta:

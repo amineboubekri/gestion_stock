@@ -38,6 +38,14 @@ class Produit(models.Model):
     def __str__(self):
         return self.designation
 
+class CommandeAvantValidation(models.Model):
+    designation = models.CharField(max_length=255)
+    num_ordre = models.IntegerField()
+    validation = models.CharField(max_length=255, default='En attente') 
+    produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
+    employe = models.ForeignKey(Personne, on_delete=models.CASCADE)
+    quantite_commande = models.FloatField()
+
 class Commande(models.Model):
     designation = models.CharField(max_length=255)
     num_ordre = models.IntegerField()

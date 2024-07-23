@@ -1,9 +1,9 @@
 {% extends "employe_base.html" %}
-{% block title %}Mes Commandes{% endblock %}
+{% block title %}Mon hisrorique{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Mes Commandes</h2>
+    <h2 class="text-center mb-4">Historique</h2>
     <ul class="list-group">
         {% for order in orders %}
             <li class="list-group-item">
@@ -11,12 +11,6 @@
                 <strong>Numéro de Commande:</strong> {{ order.num_ordre }} <br>
                 <strong>Quantite</strong> {{ order.quantite_commande }} <br>
                 <strong>Produit:</strong> {{ order.produit.designation }} <br>
-                <strong>Validation:</strong> {{ order.validation }}
-                <td>
-                    {% if order.validation == 'valide' %}
-                        <a href="{% url 'generate_order_pdf' order_id=order.id %}">Download PDF</a>
-                    {% endif %}
-                </td>
             </li>
         {% empty %}
             <li class="list-group-item">Aucune commande trouvée.</li>
