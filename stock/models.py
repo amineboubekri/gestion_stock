@@ -57,7 +57,7 @@ class Entree(models.Model):
     produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
     quantite = models.PositiveIntegerField()
     prix_achat = models.DecimalField(max_digits=10, decimal_places=2)
-    date_entree = models.DateTimeField(auto_now_add=True)
+    date_entree = models.DateTimeField()
 
 class Panier(models.Model):
     date_sortie = models.DateField()

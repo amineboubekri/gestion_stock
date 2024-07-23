@@ -175,7 +175,8 @@ def ajouter_stock(request):
             entree = form.save(commit=False)
             produit = entree.produit
             quantite = entree.quantite
-            prix_achat = entree.prix_achat
+            prix_achat = entree.prix_achat 
+            date_entree = entree.date_entree
 
             produit.quantite += quantite
 
@@ -184,7 +185,6 @@ def ajouter_stock(request):
             nouvelle_valeur_stock = valeur_stock_precedent + valeur_achat_nouvelle_entree
             produit.cmup = nouvelle_valeur_stock / (produit.quantite + quantite)
             produit.prix = produit.cmup
-
             produit.save()
             entree.save()
             return redirect('magasinier_dashboard')
@@ -192,3 +192,9 @@ def ajouter_stock(request):
         form = AjoutStockForm()
 
     return render(request, 'stock/ajouter_stock.html', {'form': form})
+
+@login_required
+def supprimer_produit_admin(request, product_id):
+    produit = get_object_or_404(Produit, id=product_id)
+    produit.delete()
+    return redirect(reverse('admin_products'))

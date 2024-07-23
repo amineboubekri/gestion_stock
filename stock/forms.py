@@ -35,4 +35,4 @@ class CommandeUpdateForm(forms.ModelForm):
 class AjoutStockForm(forms.ModelForm):
     class Meta:
         model = Entree
-        fields = ['produit', 'quantite', 'prix_achat']
+        fields = ['produit', 'quantite', 'prix_achat', 'date_entree']
