@@ -64,6 +64,29 @@
                         </li>
                     </ul>
                 </li>
+                <!-- New Cart Functionality Links -->
+                <li>
+                    <a href="#cartSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle sidebar-text right-arrow sidebar-button">
+                        <i class="fas fa-shopping-cart"></i> Panier
+                    </a>
+                    <ul class="collapse list-unstyled" id="cartSubmenu">
+                        <li>
+                            <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'add_to_cart' %}">
+                                <i class="fas fa-dot-circle"></i> Ajouter au Panier
+                            </a>
+                        </li>
+                        <li>
+                            <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'view_cart' %}">
+                                <i class="fas fa-dot-circle"></i> Voir le Panier
+                            </a>
+                        </li>
+                        <li>
+                            <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'place_order' %}">
+                                <i class="fas fa-dot-circle"></i> Passer la Commande
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="bottomleft">
                     <a href="{% url 'logout' %}" class="sidebar-text right-arrow sidebar-button">
                         Logout

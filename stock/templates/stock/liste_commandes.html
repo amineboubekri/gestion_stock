@@ -9,12 +9,15 @@
             <li class="list-group-item">
                 <strong>Désignation:</strong> {{ order.designation }} <br>
                 <strong>Numéro de Commande:</strong> {{ order.num_ordre }} <br>
-                <strong>Quantite</strong> {{ order.quantite_commande }} <br>
+                <strong>Quantite:</strong> {{ order.quantite_commande }} <br>
+                {% if order.quantite_commande != order.quantite_commande_avant %}
+                    <b>Quantite demandée:</b> {{ order.quantite_commande_avant }}<br>
+                {% endif %}
                 <strong>Produit:</strong> {{ order.produit.designation }} <br>
                 <strong>Validation:</strong> {{ order.validation }}
                 <td>
                     {% if order.validation == 'valide' %}
-                        <a href="{% url 'generate_order_pdf' order_id=order.id %}">Download PDF</a>
+                        <a href="{% url 'generate_order_pdf' order_id=order.id %}">Telecharger PDF</a>
                     {% endif %}
                 </td>
             </li>

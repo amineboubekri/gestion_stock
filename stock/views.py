@@ -2,8 +2,8 @@ from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm, CustomAuthenticationForm, CommandeForm, ProduitForm, CommandeUpdateForm, AjoutStockForm, CommandeAvantValidation
-from .models import Commande, Produit, Entree
+from .forms import CustomUserCreationForm, CustomAuthenticationForm, CommandeForm, ProduitForm, CommandeUpdateForm, AjoutStockForm, CommandeAvantValidation, CartAddProductForm
+from .models import Commande, Produit, Entree, Cart
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from reportlab.pdfgen import canvas
@@ -73,6 +73,7 @@ def create_order(request):
             order.validation = 'En attente'
             produit = order.produit
             quantite_commande = order.quantite_commande
+            order.quantite_commande_avant = quantite_commande
 
             if produit.quantite >= quantite_commande:
                 produit.quantite -= quantite_commande
@@ -244,13 +245,66 @@ def generate_order_pdf(request, order_id):
     content = []
 
     content.append(Paragraph(f'Commande id {order_id}', title_style))
-    content.append(Paragraph(f'Commade Number: <b>{order.num_ordre}</b>', normal_style))
+    content.append(Paragraph(f'Numero de commande: <b>{order.num_ordre}</b>', normal_style))
     content.append(Paragraph(f'Designation: <b>{order.designation}</b>', normal_style))
     content.append(Paragraph(f'Produit: <b>{order.produit.designation}</b>', normal_style))
     content.append(Paragraph(f'Quantite <b>{order.quantite_commande}</b>', normal_style))
     content.append(Paragraph(f'Employe: <b>{order.employe.username}</b>', normal_style))
-    content.append(Paragraph(f'Validation Statut: <b>{order.validation}</b>', normal_style))
+    content.append(Paragraph(f'Statut: <b>{order.validation}</b>', normal_style))
 
     doc.build(content)
 
     return response
+
+
+@login_required
+def add_to_cart(request):
+    if request.method == 'POST':
+        form = CartAddProductForm(request.POST)
+        if form.is_valid():
+            cart_item = form.save(commit=False)
+            cart_item.user = request.user
+            cart_item.save()
+            return redirect('add_to_cart')
+    else:
+        form = CartAddProductForm()
+
+    return render(request, 'stock/add_to_cart.html', {'form': form})
+
+@login_required
+def view_cart(request):
+    cart_items = Cart.objects.filter(user=request.user)
+    return render(request, 'stock/view_cart.html', {'cart_items': cart_items})
+
+@login_required
+def place_order(request):
+    cart_items = Cart.objects.filter(user=request.user)
+    if request.method == 'POST':
+        for item in cart_items:
+            if item.produit.quantite >= item.quantite:
+                order = Commande(
+                    designation=item.produit.designation,
+                    num_ordre=item.id,
+                    produit=item.produit,
+                    employe=request.user,
+                    quantite_commande=item.quantite,
+                    validation='En attente'
+                )
+                item.produit.quantite -= item.quantite
+                item.produit.save()
+                order.save()
+
+                original_order = CommandeAvantValidation(
+                    designation=order.designation,
+                    num_ordre=order.num_ordre,
+                    validation=order.validation,
+                    produit=order.produit,
+                    employe=order.employe,
+                    quantite_commande=order.quantite_commande
+                )
+                original_order.save()
+
+        cart_items.delete()
+        return redirect('employee_orders')
+
+    return render(request, 'stock/place_order.html', {'cart_items': cart_items})

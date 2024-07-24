@@ -53,6 +53,7 @@ class Commande(models.Model):
     produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
     employe = models.ForeignKey(Personne, on_delete=models.CASCADE)
     quantite_commande = models.FloatField()
+    quantite_commande_avant = models.FloatField()
 
 class Fournisseur(models.Model):
     nom = models.CharField(max_length=255)
@@ -67,6 +68,13 @@ class Entree(models.Model):
     prix_achat = models.DecimalField(max_digits=10, decimal_places=2)
     date_entree = models.DateTimeField()
 
-class Panier(models.Model):
-    date_sortie = models.DateField()
-    produit = models.ManyToManyField(Produit)
+# models.py
+
+class Cart(models.Model):
+    user = models.ForeignKey(Personne, on_delete=models.CASCADE)
+    produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
+    quantite = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.produit.designation} x {self.quantite} ({self.user.username})"
+

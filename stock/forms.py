@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import Personne, Commande, Produit, Entree, CommandeAvantValidation
+from .models import Personne, Commande, Produit, Entree, CommandeAvantValidation, Cart
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -44,3 +44,9 @@ class AjoutStockForm(forms.ModelForm):
     class Meta:
         model = Entree
         fields = ['produit', 'quantite', 'prix_achat', 'date_entree']
+
+
+class CartAddProductForm(forms.ModelForm):
+    class Meta:
+        model = Cart
+        fields = ['produit', 'quantite']

@@ -1,0 +1,21 @@
+{% extends 'employe_base.html' %}
+{% block content %}
+<h2>Votre Panier</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Produit</th>
+            <th>Quantité</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart_items %}
+        <tr>
+            <td>{{ item.produit.designation }}</td>
+            <td>{{ item.quantite }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'place_order' %}">Passer la Commande</a>
+{% endblock %}

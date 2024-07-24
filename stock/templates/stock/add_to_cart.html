@@ -1,0 +1,10 @@
+{% extends 'employe_base.html' %}
+{% block content %}
+<h2>Ajouter au Panier</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Ajouter au Panier</button>
+</form>
+<a href="{% url 'view_cart' %}">Voir le Panier</a>
+{% endblock %}

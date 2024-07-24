@@ -23,5 +23,7 @@ urlpatterns = [
     path('ajouter_stock/', views.ajouter_stock, name='ajouter_stock'),
     path('delete_product_admin/<int:product_id>/', views.supprimer_produit_admin, name='supprimer_produit_admin'),
     path('order/<int:order_id>/pdf/', views.generate_order_pdf, name='generate_order_pdf'),
-
+    path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
+    path('view_cart/', views.view_cart, name='view_cart'),
+    path('place_order/', views.place_order, name='place_order'),
 ]
