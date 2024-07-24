@@ -68,13 +68,13 @@ class Entree(models.Model):
     prix_achat = models.DecimalField(max_digits=10, decimal_places=2)
     date_entree = models.DateTimeField()
 
-# models.py
-
 class Cart(models.Model):
     user = models.ForeignKey(Personne, on_delete=models.CASCADE)
     produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
     quantite = models.PositiveIntegerField(default=1)
+    commande = models.ForeignKey(Commande, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"{self.produit.designation} x {self.quantite} ({self.user.username})"
+
 

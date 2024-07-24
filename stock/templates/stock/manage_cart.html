@@ -1,0 +1,29 @@
+{% extends "magasinier_base.html" %}
+{% block title %}Gérer le Panier{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Gérer le Panier ID: {{ cart.id }}</h2>
+    <ul class="list-group">
+        {% for order in orders %}
+            <li class="list-group-item">
+                <strong>Désignation:</strong> {{ order.designation }} <br>
+                <strong>Numéro de Commande:</strong> {{ order.num_ordre }} <br>
+                <strong>Quantité:</strong> {{ order.quantite_commande }} <br>
+                <strong>Produit:</strong> {{ order.produit.designation }} <br>
+                <strong>Validation:</strong> {{ order.validation }} <br>
+                <form method="post" action="{% url 'valider_commande' order.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Valider</button>
+                </form>
+                <form method="post" action="{% url 'refuser_commande' order.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Refuser</button>
+                </form>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Aucune commande trouvée.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

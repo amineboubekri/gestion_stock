@@ -1,0 +1,19 @@
+{% extends "magasinier_base.html" %}
+{% block title %}Les Paniers{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Les Paniers</h2>
+    <ul class="list-group">
+        {% for cart in carts %}
+            <li class="list-group-item">
+                <strong>Panier ID:</strong> {{ cart.id }} <br>
+                <strong>Utilisateur:</strong> {{ cart.user.username }} <br>
+                <a href="{% url 'manage_cart' cart.id %}" class="btn btn-primary">Gérer le Panier</a>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Aucun panier trouvé.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

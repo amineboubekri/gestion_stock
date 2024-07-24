@@ -264,8 +264,12 @@ def add_to_cart(request):
         if form.is_valid():
             cart_item = form.save(commit=False)
             cart_item.user = request.user
-            cart_item.save()
-            return redirect('add_to_cart')
+            produit=cart_item.produit
+            if produit.quantite >= cart_item.quantite:
+                cart_item.save()
+                
+            else:
+                form.add_error('quantite', 'Quantité commandée supérieure à la quantité disponible.')
     else:
         form = CartAddProductForm()
 
@@ -288,7 +292,9 @@ def place_order(request):
                     produit=item.produit,
                     employe=request.user,
                     quantite_commande=item.quantite,
-                    validation='En attente'
+                    validation='En attente',
+                    quantite_commande_avant = item.quantite
+
                 )
                 item.produit.quantite -= item.quantite
                 item.produit.save()
@@ -308,3 +314,5 @@ def place_order(request):
         return redirect('employee_orders')
 
     return render(request, 'stock/place_order.html', {'cart_items': cart_items})
+
+
