@@ -267,7 +267,6 @@ def add_to_cart(request):
             produit=cart_item.produit
             if produit.quantite >= cart_item.quantite:
                 cart_item.save()
-                
             else:
                 form.add_error('quantite', 'Quantité commandée supérieure à la quantité disponible.')
     else:
@@ -314,5 +313,3 @@ def place_order(request):
         return redirect('employee_orders')
 
     return render(request, 'stock/place_order.html', {'cart_items': cart_items})
-
-
