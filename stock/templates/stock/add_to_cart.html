@@ -1,5 +1,5 @@
 {% extends "employe_base.html" %}
-
+{% load static %}
 {% block title %}Ajouter au Panier{% endblock %}
 
 {% block content %}
@@ -9,27 +9,24 @@
         {% csrf_token %}
         
         <!-- Liste des Produits -->
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Désignation</th>
-                        <th>Quantité Disponible</th>
-                        <th>Quantité Commandée</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for product in products %}
-                    <tr>
-                        <td>{{ product.designation }}</td>
-                        <td>{{ product.quantite }}</td>
-                        <td>
-                            <input type="number" name="quantity_{{ product.id }}" min="0" max="{{ product.quantite }}" class="form-control" />
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="image-container">
+                        <img src="{% static '' %}{{ product.image }}" alt="{{ product.designation }}" class="card-img-top product-image" />
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.designation }}</h5>
+                        <p class="card-text">Quantité Disponible: {{ product.quantite }}</p>
+                        <div class="form-group">
+                            <label for="quantity_{{ product.id }}">Quantité Commandée</label>
+                            <input type="number" placeholder="0" id="quantity_{{ product.id }}" name="quantity_{{ product.id }}" min="0" max="{{ product.quantite }}" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
 
         <div class="d-grid gap-2 col-6 mx-auto">
@@ -37,4 +34,26 @@
         </div>
     </form>
 </div>
+<style>
+    .image-container {
+        height: 200px;
+        border: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .product-image {
+        height: 100%;
+        width: auto;
+        object-fit: contain;
+    }
+    .card {
+        display: flex;
+        flex-direction: column;
+    }
+    .card-body {
+        flex: 1 1 auto;
+    }
+</style>
 {% endblock %}

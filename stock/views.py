@@ -278,8 +278,6 @@ def add_to_cart(request):
         if cart_items:
             Cart.objects.bulk_create(cart_items)
             return redirect('view_cart')
-        else:
-            form.add_error(None, 'Aucune quantité valide n\'a été saisie.')
     else:
         products = Produit.objects.all()
 
