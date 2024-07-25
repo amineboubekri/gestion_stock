@@ -1,4 +1,6 @@
 {% extends "admin_base.html" %}
+
+{% load static %}
 {% block title %}Les Produits{% endblock %}
 
 {% block content %}
@@ -7,6 +9,7 @@
     <ul class="list-group">
         {% for product in products %}
             <li class="list-group-item">
+                <img src="{% static '' %}{{ product.image }}" alt="{{ product.designation }}" class="product-image" /><br>
                 <strong>Désignation:</strong> {{ product.designation }} <br>
                 <strong>Quatite:</strong> {{ product.quantite }} <br>
                 <strong>Prix</strong> {{ product.prix }} <br>

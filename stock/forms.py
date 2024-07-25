@@ -33,7 +33,7 @@ class CommandeAvantvalidationForm(forms.ModelForm):
 class ProduitForm(forms.ModelForm):
     class Meta:
         model = Produit
-        fields = ['designation', 'quantite', 'prix']
+        fields = ['designation', 'quantite', 'prix', 'image']
 
 class CommandeUpdateForm(forms.ModelForm):
     class Meta:

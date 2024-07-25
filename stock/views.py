@@ -10,6 +10,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph
+from django.views.decorators.csrf import csrf_exempt
 
 def login_register(request):
     if request.method == 'POST':
@@ -64,6 +65,7 @@ def user_logout(request):
 def create_order(request):
     if request.user.role != 'employe':
         return redirect('home')
+    
 
     if request.method == 'POST':
         form = CommandeForm(request.POST)
@@ -146,7 +148,7 @@ def add_product(request):
         return redirect('home')
 
     if request.method == 'POST':
-        form = ProduitForm(request.POST)
+        form = ProduitForm(request.POST, request.FILES)
         if form.is_valid():
             produit = form.save(commit=False)
             prix = form.cleaned_data['prix']  
@@ -260,19 +262,29 @@ def generate_order_pdf(request, order_id):
 @login_required
 def add_to_cart(request):
     if request.method == 'POST':
-        form = CartAddProductForm(request.POST)
-        if form.is_valid():
-            cart_item = form.save(commit=False)
-            cart_item.user = request.user
-            produit=cart_item.produit
-            if produit.quantite >= cart_item.quantite:
-                cart_item.save()
-            else:
-                form.add_error('quantite', 'Quantité commandée supérieure à la quantité disponible.')
+        products = Produit.objects.all()
+        cart_items = []
+        for product in products:
+            quantity = request.POST.get(f'quantity_{product.id}', 0)
+            if quantity:
+                quantity = int(quantity)
+                if quantity > 0 and quantity <= product.quantite:
+                    cart_item = Cart(
+                        user=request.user,
+                        produit=product,
+                        quantite=quantity
+                    )
+                    cart_items.append(cart_item)
+        if cart_items:
+            Cart.objects.bulk_create(cart_items)
+            return redirect('view_cart')
+        else:
+            form.add_error(None, 'Aucune quantité valide n\'a été saisie.')
     else:
-        form = CartAddProductForm()
+        products = Produit.objects.all()
 
-    return render(request, 'stock/add_to_cart.html', {'form': form})
+    return render(request, 'stock/add_to_cart.html', {'products': products})
+
 
 @login_required
 def view_cart(request):

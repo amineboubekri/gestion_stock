@@ -22,15 +22,12 @@ class Produit(models.Model):
     prix_precedant = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     prix = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     cmup = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    image = models.ImageField(upload_to='images/',null=True)
 
     def update_cmup(self, prix, quantite_ajoutee):
         previous_cmup = Decimal(self.prix_precedant)
         new_price = Decimal(prix)
         total_quantity = Decimal(self.quantite) + Decimal(quantite_ajoutee)   
-      #  if total_quantity > 0:
-       #     self.cmup = (previous_cmup * Decimal(self.quantite) + new_price * Decimal(quantite_ajoutee)) / total_quantity
-        #else:
-         #   self.cmup = Decimal(0)
 
         self.prix_precedant = new_price
         self.quantite = total_quantity
