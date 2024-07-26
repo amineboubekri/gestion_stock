@@ -206,7 +206,7 @@ def ajouter_stock(request):
             entree = form.save(commit=False)
             produit = entree.produit
             quantite = entree.quantite
-            prix_achat = entree.prix_achat 
+            prix_achat = entree.prix_achat
             date_entree = entree.date_entree
 
             produit.quantite += quantite
@@ -223,6 +223,7 @@ def ajouter_stock(request):
         form = AjoutStockForm()
 
     return render(request, 'stock/ajouter_stock.html', {'form': form})
+
 
 @login_required
 def supprimer_produit_admin(request, product_id):

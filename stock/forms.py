@@ -41,6 +41,10 @@ class CommandeUpdateForm(forms.ModelForm):
         fields = ['designation', 'num_ordre', 'produit', 'quantite_commande', 'validation']
 
 class AjoutStockForm(forms.ModelForm):
+    date_entree = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        input_formats=['%Y-%m-%dT%H:%M']
+    )    
     class Meta:
         model = Entree
         fields = ['produit', 'quantite', 'prix_achat', 'date_entree']
