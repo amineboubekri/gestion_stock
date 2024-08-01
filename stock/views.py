@@ -157,7 +157,7 @@ def add_product(request):
             produit.prix_precedant = prix
             produit.cmup = prix
             produit.save()             
-            return redirect('admin_dashboard')
+            return redirect('admin_products')
     else:
         form = ProduitForm()
 
@@ -181,7 +181,7 @@ def admin_products(request):
 def supprimer_produit(request, product_id):
     produit = get_object_or_404(Produit, id=product_id)
     produit.delete()
-    return redirect(reverse('magasinier_liste'))
+    return redirect(reverse('admin_products'))
 
 @login_required
 def modifier_commande(request, order_id):
@@ -275,7 +275,8 @@ def add_to_cart(request):
                     cart_item = Cart(
                         user=request.user,
                         produit=product,
-                        quantite=quantity
+                        quantite=quantity,
+                        grouped=request.POST.get('grouped', False)  
                     )
                     cart_items.append(cart_item)
         if cart_items:
@@ -285,6 +286,7 @@ def add_to_cart(request):
         products = Produit.objects.all()
 
     return render(request, 'stock/add_to_cart.html', {'products': products})
+
 
 
 @login_required
@@ -326,6 +328,17 @@ def place_order(request):
         return redirect('employee_orders')
 
     return render(request, 'stock/place_order.html', {'cart_items': cart_items})
+
+def modifier_produit(request, product_id):
+    product = get_object_or_404(Produit, id=product_id)
+    if request.method == 'POST':
+        form = ProduitForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_products')
+    else:
+        form = ProduitForm(instance=product)
+    return render(request, 'stock/modifier_produit.html', {'form': form, 'product': product})
 
 def modifier_produit(request, product_id):
     product = get_object_or_404(Produit, id=product_id)

@@ -1,28 +1,62 @@
 {% extends "admin_base.html" %}
-
 {% load static %}
 {% block title %}Les Produits{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center mb-4">Produits disponibles</h2>
-    <ul class="list-group">
+    <div class="row">
         {% for product in products %}
-            <li class="list-group-item">
-                <img src="{% static '' %}{{ product.image }}" alt="{{ product.designation }}" class="product-image" /><br>
-                <strong>Désignation:</strong> {{ product.designation }} <br>
-                <strong>Quantité:</strong> {{ product.quantite }} <br>
-                <strong>Prix:</strong> {{ product.prix }} <br>
-                <strong>CMUP:</strong> {{ product.cmup }} <br>
-                <form method="post" action="{% url 'supprimer_produit' product.id %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Supprimer</button>
-                </form>
-                <a href="{% url 'modifier_produit' product.id %}" class="btn btn-warning" style="display:inline;">Modifier</a>
-            </li>
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="image-container">
+                        <img src="{% static '' %}{{ product.image }}" alt="{{ product.designation }}" class="card-img-top product-image" />
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>Désignation:</strong> {{ product.designation }}</h5>
+                        <p class="card-text">
+                            <strong>Quantité:</strong> {{ product.quantite }} <br>
+                            <strong>Prix:</strong> {{ product.prix }} <br>
+                            <strong>CMUP:</strong> {{ product.cmup }}
+                        </p>
+                        <form method="post" action="{% url 'supprimer_produit' product.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                        <a href="{% url 'modifier_produit' product.id %}" class="btn btn-warning" style="display:inline;">Modifier</a>
+                    </div>
+                </div>
+            </div>
         {% empty %}
-            <li class="list-group-item">Aucun produit trouvé.</li>
+            <div class="col-12">
+                <div class="alert alert-warning">Aucun produit trouvé.</div>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 </div>
+<style>
+    .image-container {
+        height: 200px;
+        border: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .product-image {
+        height: 100%;
+        width: auto;
+        object-fit: contain;
+    }
+    .card {
+        display: flex;
+        flex-direction: column;
+    }
+    .card-body {
+        flex: 1 1 auto;
+    }
+</style>
+{% endblock %}
+
+{% block extra_css %}
 {% endblock %}
