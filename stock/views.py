@@ -11,6 +11,8 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from django.views.decorators.csrf import csrf_exempt
+from uuid import uuid4
+
 
 def login_register(request):
     if request.method == 'POST':
@@ -324,3 +326,14 @@ def place_order(request):
         return redirect('employee_orders')
 
     return render(request, 'stock/place_order.html', {'cart_items': cart_items})
+
+def modifier_produit(request, product_id):
+    product = get_object_or_404(Produit, id=product_id)
+    if request.method == 'POST':
+        form = ProduitForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_products')
+    else:
+        form = ProduitForm(instance=product)
+    return render(request, 'stock/modifier_produit.html', {'form': form, 'product': product})

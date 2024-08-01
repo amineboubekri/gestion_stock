@@ -70,6 +70,7 @@ class Cart(models.Model):
     produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
     quantite = models.PositiveIntegerField(default=1)
     commande = models.ForeignKey(Commande, on_delete=models.SET_NULL, null=True, blank=True)
+    cart_group = models.CharField(max_length=100, default='')
 
     def __str__(self):
         return f"{self.produit.designation} x {self.quantite} ({self.user.username})"

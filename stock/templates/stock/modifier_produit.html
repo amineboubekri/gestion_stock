@@ -1,10 +1,10 @@
 {% extends "admin_base.html" %}
-{% block title %}Ajouter un Produit{% endblock %}
+{% block title %}Modifier le Produit{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Ajouter un Produit</h2>
-    <form method="post" action="{% url 'add_product' %}" enctype="multipart/form-data">
+    <h2 class="text-center mb-4">Modifier le Produit: {{ product.designation }}</h2>
+    <form method="post" action="{% url 'modifier_produit' product.id %}" enctype="multipart/form-data">
         {% csrf_token %}
 
         <!-- Designation -->
@@ -32,7 +32,7 @@
         </div>
 
         <div class="d-grid gap-2 col-6 mx-auto">
-            <button type="submit" class="btn btn-primary">Ajouter</button>
+            <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
         </div>
     </form>
 
