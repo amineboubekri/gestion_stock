@@ -108,11 +108,19 @@ def create_order(request):
 def employee_orders(request):
     if request.user.role != 'employe' and request.user.role != 'magasinier':
         return redirect('home')
-    if request.user.role == 'employe':
-        orders = Commande.objects.filter(employe=request.user)
-    else:
-        orders = Commande.objects.all()
-    return render(request, 'stock/liste_commandes.html', {'orders': orders})
+
+    orders = Commande.objects.filter(employe=request.user)
+
+    # Group orders by 'num_ordre'
+    grouped_orders = {}
+    for order in orders:
+        if order.num_ordre not in grouped_orders:
+            grouped_orders[order.num_ordre] = []
+        grouped_orders[order.num_ordre].append(order)
+
+    return render(request, 'stock/liste_commandes.html', {'grouped_orders': grouped_orders})
+
+
 
 @login_required
 def commandes_history(request):
@@ -240,11 +248,11 @@ def supprimer_produit_admin(request, product_id):
     return redirect(reverse('admin_products'))
 
 @login_required
-def generate_order_pdf(request):
-    cart_items = Cart.objects.filter(user=request.user)
+def generate_order_pdf(request, order_id):
+    order = get_object_or_404(Commande, id=order_id)
 
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="cart_order_{uuid4()}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="order_{order_id}.pdf"'
 
     doc = SimpleDocTemplate(response, pagesize=letter)
     styles = getSampleStyleSheet()
@@ -253,15 +261,11 @@ def generate_order_pdf(request):
 
     content = []
 
-    content.append(Paragraph('Récapitulatif de la Commande', title_style))
-    total_quantity = 0
-    for item in cart_items:
-        total_quantity += item.quantite
-        content.append(Paragraph(f'Produit: <b>{item.produit.designation}</b>', normal_style))
-        content.append(Paragraph(f'Quantité: <b>{item.quantite}</b>', normal_style))
-        content.append(Paragraph('<br/>', normal_style))
-
-    content.append(Paragraph(f'Total Quantité: <b>{total_quantity}</b>', normal_style))
+    content.append(Paragraph('Détails de la Commande', title_style))
+    content.append(Paragraph(f'Produit: <b>{order.produit.designation}</b>', normal_style))
+    content.append(Paragraph(f'Quantité: <b>{order.quantite_commande}</b>', normal_style))
+    content.append(Paragraph(f'Désignation: <b>{order.designation}</b>', normal_style))
+    content.append(Paragraph(f'Validation: <b>{order.validation}</b>', normal_style))
 
     doc.build(content)
 

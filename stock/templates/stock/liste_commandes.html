@@ -5,22 +5,24 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">Mes Commandes</h2>
     <div class="row">
-        {% for order in orders %}
-            <div class="col-md-4 mb-4">
+        {% for orders in grouped_orders.values %}
+            <div class="col-12 mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Commande #{{ order.id }}</h5>
-                        <p class="card-text">
-                            <strong>Désignation:</strong> {{ order.designation }} <br>
-                            <strong>Quantité:</strong> {{ order.quantite_commande }} <br>
-                            {% if order.quantite_commande != order.quantite_commande_avant %}
-                                <b>Quantité demandée:</b> {{ order.quantite_commande_avant }}<br>
-                            {% endif %}
-                            <strong>Produit:</strong> {{ order.produit.designation }} <br>
-                            <strong>Validation:</strong> {{ order.validation }}
-                        </p>
-                        {% if order.validation == 'valide' %}
-                            <a href="{% url 'generate_order_pdf' order_id=order.id %}" class="btn btn-primary">Télécharger PDF</a>
+                        <h5 class="card-title">Panier #{{ orders.0.id }}</h5>
+                        {% for order in orders %}
+                            <p class="card-text">
+                                <strong>Désignation:</strong> {{ order.designation }} <br>
+                                <strong>Quantité:</strong> {{ order.quantite_commande }} <br>
+                                {% if order.quantite_commande != order.quantite_commande_avant %}
+                                    <b>Quantité demandée:</b> {{ order.quantite_commande_avant }}<br>
+                                {% endif %}
+                                <strong>Produit:</strong> {{ order.produit.designation }} <br>
+                                <strong>Validation:</strong> {{ order.validation }} <br>
+                            </p>
+                        {% endfor %}
+                        {% if orders.0.validation == 'valide' %}
+                        <a href="{% url 'generate_order_pdf' order_id=orders.0.id %}" class="btn btn-primary">Télécharger PDF</a>
                         {% endif %}
                     </div>
                 </div>
