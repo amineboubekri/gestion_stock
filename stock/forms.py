@@ -38,7 +38,7 @@ class ProduitForm(forms.ModelForm):
 class CommandeUpdateForm(forms.ModelForm):
     class Meta:
         model = Commande
-        fields = ['designation', 'num_ordre', 'produit', 'quantite_commande', 'validation']
+        fields = ['designation', 'produit', 'quantite_commande', 'validation']
 
 class AjoutStockForm(forms.ModelForm):
     date_entree = forms.DateTimeField(

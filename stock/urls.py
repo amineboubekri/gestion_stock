@@ -28,5 +28,4 @@ urlpatterns = [
     path('view_cart/', views.view_cart, name='view_cart'),
     path('place_order/', views.place_order, name='place_order'),
     path('modifier_produit/<int:product_id>/', views.modifier_produit, name='modifier_produit'),
-
 ]

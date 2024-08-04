@@ -12,7 +12,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
-
+import uuid
 
 def login_register(request):
     if request.method == 'POST':
@@ -63,18 +63,19 @@ def user_logout(request):
     auth_logout(request)
     return redirect('login')
 
+
 @login_required
 def create_order(request):
     if request.user.role != 'employe':
         return redirect('home')
     
-
     if request.method == 'POST':
         form = CommandeForm(request.POST)
         if form.is_valid():
             order = form.save(commit=False)
             order.employe = request.user
             order.validation = 'En attente'
+            order.num_ordre = uuid.uuid4()
             produit = order.produit
             quantite_commande = order.quantite_commande
             order.quantite_commande_avant = quantite_commande
@@ -180,8 +181,13 @@ def admin_products(request):
 @login_required
 def supprimer_produit(request, product_id):
     produit = get_object_or_404(Produit, id=product_id)
+
+    if produit.image:
+        produit.image.delete(save=False)
+
     produit.delete()
     return redirect(reverse('admin_products'))
+
 
 @login_required
 def modifier_commande(request, order_id):
@@ -234,32 +240,33 @@ def supprimer_produit_admin(request, product_id):
     return redirect(reverse('admin_products'))
 
 @login_required
-def generate_order_pdf(request, order_id):
-    order = get_object_or_404(Commande, id=order_id)
+def generate_order_pdf(request):
+    cart_items = Cart.objects.filter(user=request.user)
 
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="order_{order_id}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="cart_order_{uuid4()}.pdf"'
 
     doc = SimpleDocTemplate(response, pagesize=letter)
-
     styles = getSampleStyleSheet()
     title_style = styles['Title']
-    heading_style = ParagraphStyle(name='Heading', fontSize=14, spaceAfter=10)
     normal_style = styles['BodyText']
 
     content = []
 
-    content.append(Paragraph(f'Commande id {order_id}', title_style))
-    content.append(Paragraph(f'Numero de commande: <b>{order.num_ordre}</b>', normal_style))
-    content.append(Paragraph(f'Designation: <b>{order.designation}</b>', normal_style))
-    content.append(Paragraph(f'Produit: <b>{order.produit.designation}</b>', normal_style))
-    content.append(Paragraph(f'Quantite <b>{order.quantite_commande}</b>', normal_style))
-    content.append(Paragraph(f'Employe: <b>{order.employe.username}</b>', normal_style))
-    content.append(Paragraph(f'Statut: <b>{order.validation}</b>', normal_style))
+    content.append(Paragraph('Récapitulatif de la Commande', title_style))
+    total_quantity = 0
+    for item in cart_items:
+        total_quantity += item.quantite
+        content.append(Paragraph(f'Produit: <b>{item.produit.designation}</b>', normal_style))
+        content.append(Paragraph(f'Quantité: <b>{item.quantite}</b>', normal_style))
+        content.append(Paragraph('<br/>', normal_style))
+
+    content.append(Paragraph(f'Total Quantité: <b>{total_quantity}</b>', normal_style))
 
     doc.build(content)
 
     return response
+
 
 
 @login_required
@@ -298,36 +305,46 @@ def view_cart(request):
 def place_order(request):
     cart_items = Cart.objects.filter(user=request.user)
     if request.method == 'POST':
-        for item in cart_items:
-            if item.produit.quantite >= item.quantite:
-                order = Commande(
-                    designation=item.produit.designation,
-                    num_ordre=item.id,
-                    produit=item.produit,
-                    employe=request.user,
-                    quantite_commande=item.quantite,
-                    validation='En attente',
-                    quantite_commande_avant = item.quantite
+        if cart_items:
+            # Generate a single order number for the cart
+            num_ordre = str(uuid4())
 
-                )
-                item.produit.quantite -= item.quantite
-                item.produit.save()
-                order.save()
+            # Create orders
+            for item in cart_items:
+                produit = item.produit
+                quantite = item.quantite
+                if produit.quantite >= quantite:
+                    order = Commande(
+                        designation=f'Commande pour {produit.designation}',
+                        num_ordre=num_ordre,  # Assign the same num_ordre to all items
+                        produit=produit,
+                        employe=request.user,
+                        quantite_commande=quantite,
+                        validation='En attente',
+                        quantite_commande_avant=quantite
+                    )
+                    produit.quantite -= quantite
+                    produit.save()
+                    order.save()
 
-                original_order = CommandeAvantValidation(
-                    designation=order.designation,
-                    num_ordre=order.num_ordre,
-                    validation=order.validation,
-                    produit=order.produit,
-                    employe=order.employe,
-                    quantite_commande=order.quantite_commande
-                )
-                original_order.save()
+                    # Save original order details
+                    original_order = CommandeAvantValidation(
+                        designation=order.designation,
+                        num_ordre=num_ordre,  # Assign the same num_ordre to original orders
+                        validation=order.validation,
+                        produit=order.produit,
+                        employe=order.employe,
+                        quantite_commande=order.quantite_commande
+                    )
+                    original_order.save()
 
-        cart_items.delete()
-        return redirect('employee_orders')
+            # Clear the cart after placing the order
+            cart_items.delete()
+            return redirect('employee_orders')
 
     return render(request, 'stock/place_order.html', {'cart_items': cart_items})
+
+
 
 def modifier_produit(request, product_id):
     product = get_object_or_404(Produit, id=product_id)

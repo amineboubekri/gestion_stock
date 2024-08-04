@@ -3,7 +3,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from decimal import Decimal
-
+from uuid import uuid4
+import uuid
 
 class Personne(AbstractUser):
     ROLES = (
@@ -37,7 +38,7 @@ class Produit(models.Model):
 
 class CommandeAvantValidation(models.Model):
     designation = models.CharField(max_length=255)
-    num_ordre = models.IntegerField()
+    num_ordre = models.CharField(max_length=100, default=uuid.uuid4)
     validation = models.CharField(max_length=255, default='En attente') 
     produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
     employe = models.ForeignKey(Personne, on_delete=models.CASCADE)
@@ -45,12 +46,15 @@ class CommandeAvantValidation(models.Model):
 
 class Commande(models.Model):
     designation = models.CharField(max_length=255)
-    num_ordre = models.IntegerField()
+    num_ordre = models.CharField(max_length=100, default=uuid.uuid4)
     validation = models.CharField(max_length=255, default='En attente') 
     produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
     employe = models.ForeignKey(Personne, on_delete=models.CASCADE)
     quantite_commande = models.FloatField()
     quantite_commande_avant = models.FloatField()
+    cart_id = models.UUIDField(default=uuid4, editable=False)  
+
+
 
 class Fournisseur(models.Model):
     nom = models.CharField(max_length=255)
