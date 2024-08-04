@@ -263,6 +263,7 @@ def generate_order_pdf(request, order_id):
 
     content.append(Paragraph('Détails de la Commande', title_style))
     content.append(Paragraph(f'Produit: <b>{order.produit.designation}</b>', normal_style))
+    content.append(Paragraph(f'Employe: <b>{order.employe.username}</b>',normal_style ))
     content.append(Paragraph(f'Quantité: <b>{order.quantite_commande}</b>', normal_style))
     content.append(Paragraph(f'Désignation: <b>{order.designation}</b>', normal_style))
     content.append(Paragraph(f'Validation: <b>{order.validation}</b>', normal_style))
@@ -371,3 +372,34 @@ def modifier_produit(request, product_id):
     else:
         form = ProduitForm(instance=product)
     return render(request, 'stock/modifier_produit.html', {'form': form, 'product': product})
+
+@login_required
+def generate_cart_pdf(request, num_ordre):
+    orders = Commande.objects.filter(num_ordre=num_ordre)
+
+    if not orders:
+        return HttpResponse("Pas de commandes", status=404)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Commande_{num_ordre}.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    styles = getSampleStyleSheet()
+    title_style = styles['Title']
+    normal_style = styles['BodyText']
+
+    content = []
+
+    content.append(Paragraph('Détails de la Commande', title_style))
+    
+    for order in orders:
+        content.append(Paragraph(f'Produit: <b>{order.produit.designation}</b>', normal_style))
+        content.append(Paragraph(f'Employe: <b>{order.employe.username}</b>', normal_style))
+        content.append(Paragraph(f'Quantité: <b>{order.quantite_commande}</b>', normal_style))
+        content.append(Paragraph(f'Désignation: <b>{order.designation}</b>', normal_style))
+        content.append(Paragraph(f'Validation: <b>{order.validation}</b>', normal_style))
+        content.append(Paragraph(' ', normal_style))  
+
+    doc.build(content)
+
+    return response

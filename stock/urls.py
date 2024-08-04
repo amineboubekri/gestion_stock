@@ -28,4 +28,6 @@ urlpatterns = [
     path('view_cart/', views.view_cart, name='view_cart'),
     path('place_order/', views.place_order, name='place_order'),
     path('modifier_produit/<int:product_id>/', views.modifier_produit, name='modifier_produit'),
+    path('generate_cart_pdf/<str:num_ordre>/', views.generate_cart_pdf, name='generate_cart_pdf'),
+
 ]
