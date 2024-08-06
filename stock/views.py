@@ -9,7 +9,9 @@ from django.template.loader import render_to_string
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.platypus import  SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.units import inch
+from reportlab.lib import colors
 from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
 import uuid
@@ -375,7 +377,7 @@ def modifier_produit(request, product_id):
 
 @login_required
 def generate_cart_pdf(request, num_ordre):
-    orders = Commande.objects.filter(num_ordre=num_ordre)
+    orders = Commande.objects.filter(num_ordre=num_ordre, validation='valide')
 
     if not orders:
         return HttpResponse("Pas de commandes", status=404)
@@ -390,15 +392,34 @@ def generate_cart_pdf(request, num_ordre):
 
     content = []
 
-    content.append(Paragraph('Détails de la Commande', title_style))
+    content.append(Paragraph('Bon de réception', title_style))
+    content.append(Spacer(1, 12)) 
     
     for order in orders:
         content.append(Paragraph(f'Produit: <b>{order.produit.designation}</b>', normal_style))
-        content.append(Paragraph(f'Employe: <b>{order.employe.username}</b>', normal_style))
+        content.append(Paragraph(f'Employé: <b>{order.employe.username}</b>', normal_style))
         content.append(Paragraph(f'Quantité: <b>{order.quantite_commande}</b>', normal_style))
         content.append(Paragraph(f'Désignation: <b>{order.designation}</b>', normal_style))
         content.append(Paragraph(f'Validation: <b>{order.validation}</b>', normal_style))
-        content.append(Paragraph(' ', normal_style))  
+        content.append(Spacer(1, 12))  # Add space between each order
+
+    employe_name = orders.first().employe.username
+    content.append(Spacer(1, 24)) 
+    content.append(Paragraph(f'Je suis le soussigné {employe_name}, je confirme la réception des produits listés dans ce bon de commande.', normal_style))
+    
+    # Add space for signatures
+    content.append(Spacer(1, 48)) 
+    table_data = [
+        ['Signature du Chef:', '', 'Signature du Magasinier:'],
+        ['', '', '']
+    ]
+    table = Table(table_data, colWidths=[2.5 * inch, 0.5 * inch, 2.5 * inch])
+    table.setStyle(TableStyle([
+        ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ]))
+    content.append(table)
 
     doc.build(content)
 
