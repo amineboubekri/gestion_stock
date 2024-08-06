@@ -9,12 +9,14 @@ from django.template.loader import render_to_string
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import  SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import  SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from reportlab.lib.units import inch
 from reportlab.lib import colors
+from django.contrib.staticfiles import finders
 from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
 import uuid
+from datetime import datetime
 
 def login_register(request):
     if request.method == 'POST':
@@ -392,6 +394,21 @@ def generate_cart_pdf(request, num_ordre):
 
     content = []
 
+    current_date = datetime.now().strftime('%d/%m/%Y')
+    date_paragraph = Paragraph(f'<b>Date:</b> {current_date}', normal_style)
+    content.append(date_paragraph)
+    content.append(Spacer(1, 12))
+
+    logo_path = finders.find('images/abhlogo.png')
+    if logo_path:
+        logo = Image(logo_path)
+        logo.drawWidth = 3 * inch 
+        logo.drawHeight = 1.2 * inch 
+        logo.hAlign = 'CENTER'
+        content.append(logo)
+        content.append(Spacer(1, 24))
+
+    # Add the title
     content.append(Paragraph('Bon de réception', title_style))
     content.append(Spacer(1, 12)) 
     
@@ -401,13 +418,12 @@ def generate_cart_pdf(request, num_ordre):
         content.append(Paragraph(f'Quantité: <b>{order.quantite_commande}</b>', normal_style))
         content.append(Paragraph(f'Désignation: <b>{order.designation}</b>', normal_style))
         content.append(Paragraph(f'Validation: <b>{order.validation}</b>', normal_style))
-        content.append(Spacer(1, 12))  # Add space between each order
+        content.append(Spacer(1, 12))  
 
     employe_name = orders.first().employe.username
     content.append(Spacer(1, 24)) 
     content.append(Paragraph(f'Je suis le soussigné {employe_name}, je confirme la réception des produits listés dans ce bon de commande.', normal_style))
     
-    # Add space for signatures
     content.append(Spacer(1, 48)) 
     table_data = [
         ['Signature du Chef:', '', 'Signature du Magasinier:'],
