@@ -1,0 +1,37 @@
+{% extends "magasinier_base.html" %}
+{% block title %}Les bon des Commandes{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Les Bons de commandes</h2>
+    <div class="row">
+        {% for orders in grouped_orders.values %}
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">BON #{{ orders.0.id }}</h5>
+                        {% for order in orders %}
+                            <p class="card-text">
+                                <strong>Désignation:</strong> {{ order.designation }} <br>
+                                <strong>Quantité:</strong> {{ order.quantite_commande }} <br>
+                                {% if order.quantite_commande != order.quantite_commande_avant %}
+                                    <b>Quantité demandée:</b> {{ order.quantite_commande_avant }}<br>
+                                {% endif %}
+                                <strong>Produit:</strong> {{ order.produit.designation }} <br>
+                                <strong>Validation:</strong> {{ order.validation }} <br>
+                            </p>
+                        {% endfor %}
+                        {% if orders.0.validation == 'valide' %}
+                        <a href="{% url 'generate_cart_pdf' num_ordre=orders.0.num_ordre %}" class="btn btn-primary">Télécharger PDF</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">Aucune commande trouvée.</div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

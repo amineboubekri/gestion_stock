@@ -115,7 +115,6 @@ def employee_orders(request):
 
     orders = Commande.objects.filter(employe=request.user)
 
-    # Group orders by 'num_ordre'
     grouped_orders = {}
     for order in orders:
         if order.num_ordre not in grouped_orders:
@@ -318,14 +317,13 @@ def place_order(request):
             # Generate a single order number for the cart
             num_ordre = str(uuid4())
 
-            # Create orders
             for item in cart_items:
                 produit = item.produit
                 quantite = item.quantite
                 if produit.quantite >= quantite:
                     order = Commande(
                         designation=f'Commande pour {produit.designation}',
-                        num_ordre=num_ordre,  # Assign the same num_ordre to all items
+                        num_ordre=num_ordre,  
                         produit=produit,
                         employe=request.user,
                         quantite_commande=quantite,
@@ -336,10 +334,9 @@ def place_order(request):
                     produit.save()
                     order.save()
 
-                    # Save original order details
                     original_order = CommandeAvantValidation(
                         designation=order.designation,
-                        num_ordre=num_ordre,  # Assign the same num_ordre to original orders
+                        num_ordre=num_ordre,  
                         validation=order.validation,
                         produit=order.produit,
                         employe=order.employe,
@@ -347,7 +344,6 @@ def place_order(request):
                     )
                     original_order.save()
 
-            # Clear the cart after placing the order
             cart_items.delete()
             return redirect('employee_orders')
 
@@ -408,7 +404,6 @@ def generate_cart_pdf(request, num_ordre):
         content.append(logo)
         content.append(Spacer(1, 24))
 
-    # Add the title
     content.append(Paragraph('Bon de réception', title_style))
     content.append(Spacer(1, 12)) 
     
@@ -426,10 +421,10 @@ def generate_cart_pdf(request, num_ordre):
     
     content.append(Spacer(1, 48)) 
     table_data = [
-        ['Signature du Chef:', '', 'Signature du Magasinier:'],
-        ['', '', '']
+        ['Signature de l\'Employé:', '', 'Signature du Chef:', '', 'Signature du Magasinier:'],
+        ['', '', '', '', '']
     ]
-    table = Table(table_data, colWidths=[2.5 * inch, 0.5 * inch, 2.5 * inch])
+    table = Table(table_data, colWidths=[2.5 * inch, 0.5 * inch, 2.5 * inch, 0.5 * inch, 2.5 * inch])
     table.setStyle(TableStyle([
         ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
@@ -440,3 +435,18 @@ def generate_cart_pdf(request, num_ordre):
     doc.build(content)
 
     return response
+
+@login_required
+def magasinier_orders(request):
+    if request.user.role != 'employe' and request.user.role != 'magasinier':
+        return redirect('home')
+
+    orders = Commande.objects.all()
+
+    grouped_orders = {}
+    for order in orders:
+        if order.num_ordre not in grouped_orders:
+            grouped_orders[order.num_ordre] = []
+        grouped_orders[order.num_ordre].append(order)
+
+    return render(request, 'stock/liste_commandes_magasinier.html', {'grouped_orders': grouped_orders})
