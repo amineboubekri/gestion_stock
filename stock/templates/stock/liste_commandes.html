@@ -21,9 +21,6 @@
                                 <strong>Validation:</strong> {{ order.validation }} <br>
                             </p>
                         {% endfor %}
-                        {% if orders.0.validation == 'valide' %}
-                        <a href="{% url 'generate_cart_pdf' num_ordre=orders.0.num_ordre %}" class="btn btn-primary">Télécharger PDF</a>
-                        {% endif %}
                     </div>
                 </div>
             </div>
