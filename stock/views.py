@@ -12,6 +12,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import  SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from reportlab.lib.units import inch
 from reportlab.lib import colors
+from reportlab.graphics.shapes import Drawing, Line
 from django.contrib.staticfiles import finders
 from django.views.decorators.csrf import csrf_exempt
 from uuid import uuid4
@@ -409,19 +410,20 @@ def generate_cart_pdf(request, num_ordre):
     
     for order in orders:
         content.append(Paragraph(f'Produit: <b>{order.produit.designation}</b>', normal_style))
-        content.append(Paragraph(f'Employé: <b>{order.employe.username}</b>', normal_style))
         content.append(Paragraph(f'Quantité: <b>{order.quantite_commande}</b>', normal_style))
-        content.append(Paragraph(f'Désignation: <b>{order.designation}</b>', normal_style))
-        content.append(Paragraph(f'Validation: <b>{order.validation}</b>', normal_style))
-        content.append(Spacer(1, 12))  
+        content.append(Spacer(1, 12))
+
+        line = Drawing(8.5 * inch, 1)  
+        line.add(Line(0, 0, 6 * inch, 0, strokeColor=colors.black, strokeWidth=1))
+        content.append(line)
+        content.append(Spacer(1, 12)) 
 
     employe_name = orders.first().employe.username
     content.append(Spacer(1, 24)) 
-    content.append(Paragraph(f'Je suis le soussigné {employe_name}, je confirme la réception des produits listés dans ce bon de commande.', normal_style))
     
     content.append(Spacer(1, 48)) 
     table_data = [
-        ['Signature de l\'Employé:', '', 'Signature du Chef:', '', 'Signature du Magasinier:'],
+        [employe_name, '', 'Signature du Chef:', '', 'Signature du Magasinier:'],
         ['', '', '', '', '']
     ]
     table = Table(table_data, colWidths=[2.5 * inch, 0.5 * inch, 2.5 * inch, 0.5 * inch, 2.5 * inch])
@@ -435,6 +437,8 @@ def generate_cart_pdf(request, num_ordre):
     doc.build(content)
 
     return response
+
+
 
 @login_required
 def magasinier_orders(request):
