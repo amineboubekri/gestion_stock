@@ -5,13 +5,17 @@
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center mb-4">Ajouter au Panier</h2>
+    
+    <div class="mb-4">
+        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un produit par sa désignation...">
+    </div>
+
     <form method="post" action="{% url 'add_to_cart' %}">
         {% csrf_token %}
         
-        <!-- Liste des Produits -->
-        <div class="row">
+        <div class="row" id="productList">
             {% for product in products %}
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4 product-card">
                 <div class="card h-100">
                     <div class="image-container">
                         <img src="{% static '' %}{{ product.image }}" alt="{{ product.designation }}" class="card-img-top product-image" />
@@ -56,4 +60,21 @@
         flex: 1 1 auto;
     }
 </style>
+
+<script>
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        const searchText = this.value.toLowerCase();
+        const productCards = document.querySelectorAll('.product-card');
+        
+        productCards.forEach(function(card) {
+            const designation = card.querySelector('.card-title').textContent.toLowerCase();
+            if (designation.includes(searchText)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+</script>
+
 {% endblock %}
