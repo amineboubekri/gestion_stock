@@ -17,10 +17,37 @@
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success">Valider</button>
                 </form>
-                <form method="post" action="{% url 'refuser_commande' order.id %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Refuser</button>
-                </form>
+                <!-- Bouton de refus -->
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#refuserModal{{ order.id }}">
+                    Refuser
+                </button>
+                
+                <!-- Fenêtre modale -->
+                <div class="modal fade" id="refuserModal{{ order.id }}" tabindex="-1" role="dialog" aria-labelledby="refuserModalLabel{{ order.id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="refuserModalLabel{{ order.id }}">Raison du refus</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <form method="post" action="{% url 'refuser_commande' order.id %}">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="raisonRefus{{ order.id }}">Raison :</label>
+                                    <textarea class="form-control" id="raisonRefus{{ order.id }}" name="raison_refus" required></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                <button type="submit" class="btn btn-danger">Refuser la commande</button>
+                            </div>
+                        </form>                        
+                    </div>
+                    </div>
+                </div>  
                 <a href="{% url 'modifier_commande' order.id %}" class="btn btn-primary">Modifier</a> 
             </li>
         {% empty %}

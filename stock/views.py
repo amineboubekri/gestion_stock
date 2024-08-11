@@ -162,12 +162,21 @@ def valider_commande(request, order_id):
 @login_required
 def refuser_commande(request, order_id):
     order = get_object_or_404(Commande, id=order_id)
-    produit =  order.produit
-    produit.quantite += order.quantite_commande
-    produit.save()
-    order.validation = 'refuse'
-    order.save()
+
+    if request.method == 'POST':
+        raison_refus = request.POST.get('raison_refus', '')
+        produit = order.produit
+        produit.quantite += order.quantite_commande
+        produit.save()
+
+        order.validation = 'refuse'
+        order.raison_refus = raison_refus
+        order.save()
+
+        return redirect(reverse('magasinier_liste'))
+
     return redirect(reverse('magasinier_liste'))
+
 
 @login_required
 def add_product(request):

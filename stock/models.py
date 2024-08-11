@@ -53,6 +53,7 @@ class Commande(models.Model):
     quantite_commande = models.FloatField()
     quantite_commande_avant = models.FloatField()
     cart_id = models.UUIDField(default=uuid4, editable=False)  
+    raison_refus = models.TextField(blank=True, null=True)
 
 
 
