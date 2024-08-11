@@ -12,8 +12,10 @@
                 <strong>Quantite</strong> {{ order.quantite_commande }} <br>
                 <strong>Produit:</strong> {{ order.produit.designation }} <br>
             </li>
-        {% empty %}
-            <li class="list-group-item">Aucune commande trouvée.</li>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">Aucune commande trouvée.</div>
+            </div>
         {% endfor %}
     </ul>
 </div>

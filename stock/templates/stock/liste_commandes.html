@@ -19,6 +19,9 @@
                                 {% endif %}
                                 <strong>Produit:</strong> {{ order.produit.designation }} <br>
                                 <strong>Validation:</strong> {{ order.validation }} <br>
+                                {% if order.validation == 'refuse' %}
+                                    <strong>Raison du refus:</strong> {{ order.raison_refus }} <br>
+                                {% endif %}
                             </p>
                         {% endfor %}
                     </div>

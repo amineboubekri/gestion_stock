@@ -465,7 +465,7 @@ def magasinier_orders(request):
     if request.user.role != 'employe' and request.user.role != 'magasinier':
         return redirect('home')
 
-    orders = Commande.objects.all()
+    orders = Commande.objects.filter(validation='valide')
 
     grouped_orders = {}
     for order in orders:

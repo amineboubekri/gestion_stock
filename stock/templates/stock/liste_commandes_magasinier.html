@@ -1,9 +1,9 @@
 {% extends "magasinier_base.html" %}
-{% block title %}Les bon des Commandes{% endblock %}
+{% block title %}Les Bons de Commandes{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Les Bons de commandes</h2>
+    <h2 class="text-center mb-4">Les Bons de Commandes</h2>
     <div class="row">
         {% for orders in grouped_orders.values %}
             <div class="col-12 mb-4">
@@ -29,7 +29,7 @@
             </div>
         {% empty %}
             <div class="col-12">
-                <div class="alert alert-info" role="alert">Aucune commande trouvée.</div>
+                <div class="alert alert-info" role="alert">Aucun bon disponible</div>
             </div>
         {% endfor %}
     </div>
