@@ -1,43 +1,44 @@
 {% extends "employe_base.html" %}
-
-{% block title %}Ajouter Commande{% endblock %}
+{% load static %}
+{% block title %}Ajouter une Commande{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center mb-4">Ajouter une Commande</h2>
-    <form method="post" action="{% url 'create_order' %}">
-        {% csrf_token %}
-        
-        <!-- Désignation -->
-        <div class="form-group mb-3">
-            <label for="{{ form.designation.id_for_label }}" class="form-label">Désignation</label>
-            {{ form.designation }}
-        </div>
+    
+    <div class="mb-4">
+        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un produit par sa désignation...">
+    </div>
 
-        <!-- Numéro de Commande -->
-        <div class="form-group mb-3" hidden>
-            <label for="{{ form.num_ordre.id_for_label }}" class="form-label">Numéro de Commande</label>
-            {{ form.num_ordre }}
+    <div class="row" id="productList">
+        {% for product in products %}
+        <div class="col-md-4 mb-4 product-card">
+            <form method="post" action="{% url 'create_order' %}">
+                {% csrf_token %}
+                <div class="card h-100">
+                    <div class="image-container">
+                        <img src="{% static '' %}{{ product.image }}" alt="{{ product.designation }}" class="card-img-top product-image" />
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.designation }}</h5>
+                        <p class="card-text">Quantité Disponible: {{ product.quantite }}</p>
+                        <div class="form-group">
+                            <label for="quantity_{{ product.id }}">Quantité Commandée</label>
+                            <input type="number" id="quantity_{{ product.id }}" name="quantite_commande" min="1" max="{{ product.quantite }}" class="form-control" />
+                        </div>
+                        <input type="hidden" name="produit" value="{{ product.id }}">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary mt-3">Commander</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
+        {% endfor %}
+    </div>
 
-        <!-- Produit -->
-        <div class="form-group mb-3">
-            <label for="{{ form.produit.id_for_label }}" class="form-label">Produit</label>
-            {{ form.produit }}
-        </div>
-
-        <!-- Quantité Commandée -->
-        <div class="form-group mb-3">
-            <label for="{{ form.quantite_commande.id_for_label }}" class="form-label">Quantité Commandée</label>
-            {{ form.quantite_commande }}
-        </div>
-
-        <div class="d-grid gap-2 col-6 mx-auto">
-            <button type="submit" class="btn btn-primary">Soumettre</button>
-        </div>
-    </form>
     {% if form.errors %}
-    <div class="alert alert-danger">
+    <div class="alert alert-danger mt-4">
         <ul>
             {% for field in form %}
                 {% for error in field.errors %}
@@ -50,6 +51,45 @@
         </ul>
     </div>
     {% endif %}
-
 </div>
+
+<style>
+    .image-container {
+        height: 200px;
+        border: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .product-image {
+        height: 100%;
+        width: auto;
+        object-fit: contain;
+    }
+    .card {
+        display: flex;
+        flex-direction: column;
+    }
+    .card-body {
+        flex: 1 1 auto;
+    }
+</style>
+
+<script>
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        const searchText = this.value.toLowerCase();
+        const productCards = document.querySelectorAll('.product-card');
+        
+        productCards.forEach(function(card) {
+            const designation = card.querySelector('.card-title').textContent.toLowerCase();
+            if (designation.includes(searchText)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+</script>
+
 {% endblock %}

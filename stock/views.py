@@ -50,7 +50,7 @@ def home(request):
     elif user_role == 'magasinier':
         return redirect('magasinier_dashboard')
     else:
-        return redirect('login')  # Redirection par défaut en cas de rôle inconnu
+        return redirect('login')  
 
 @login_required
 def admin_dashboard(request):
@@ -69,44 +69,53 @@ def user_logout(request):
     return redirect('login')
 
 
+from uuid import uuid4
+
 @login_required
 def create_order(request):
     if request.user.role != 'employe':
         return redirect('home')
-    
+
     if request.method == 'POST':
-        form = CommandeForm(request.POST)
-        if form.is_valid():
-            order = form.save(commit=False)
-            order.employe = request.user
-            order.validation = 'En attente'
-            order.num_ordre = uuid.uuid4()
-            produit = order.produit
-            quantite_commande = order.quantite_commande
-            order.quantite_commande_avant = quantite_commande
+        produit_id = request.POST.get('produit')
+        quantite_commande = int(request.POST.get('quantite_commande', 0))
 
-            if produit.quantite >= quantite_commande:
-                produit.quantite -= quantite_commande
-                produit.save()
-                order.save()
+        produit = Produit.objects.get(id=produit_id)
 
-                original_order = CommandeAvantValidation(
-                    designation=order.designation,
-                    num_ordre=order.num_ordre,
-                    validation=order.validation,
-                    produit=order.produit,
-                    employe=order.employe,
-                    quantite_commande=order.quantite_commande
-                )
-                original_order.save()
+        if produit.quantite >= quantite_commande and quantite_commande > 0:
+            num_ordre = str(uuid4())
 
-                return redirect('employee_orders')
-            else:
-                form.add_error('quantite_commande', 'Quantité commandée supérieure à la quantité disponible.')
-    else:
-        form = CommandeForm()
+            order = Commande(
+                designation=f'Commande pour {produit.designation}', 
+                num_ordre=num_ordre,  
+                produit=produit,
+                employe=request.user,
+                quantite_commande=quantite_commande,
+                validation='En attente',
+                quantite_commande_avant=quantite_commande
+            )
 
-    return render(request, 'stock/ajouter_commande.html', {'form': form})
+            produit.quantite -= quantite_commande
+            produit.save()
+            order.save()
+
+            original_order = CommandeAvantValidation(
+                designation=order.designation,
+                num_ordre=order.num_ordre,
+                validation=order.validation,
+                produit=order.produit,
+                employe=order.employe,
+                quantite_commande=order.quantite_commande
+            )
+            original_order.save()
+
+            return redirect('employee_orders')
+        else:
+            error_message = 'Quantité commandée supérieure à la quantité disponible ou invalide.'
+            return render(request, 'stock/ajouter_commande.html', {'products': Produit.objects.all(), 'error_message': error_message})
+
+    return render(request, 'stock/ajouter_commande.html', {'products': Produit.objects.all()})
+
 
 
 @login_required
@@ -153,6 +162,9 @@ def valider_commande(request, order_id):
 @login_required
 def refuser_commande(request, order_id):
     order = get_object_or_404(Commande, id=order_id)
+    produit =  order.produit
+    produit.quantite += order.quantite_commande
+    produit.save()
     order.validation = 'refuse'
     order.save()
     return redirect(reverse('magasinier_liste'))
@@ -315,7 +327,6 @@ def place_order(request):
     cart_items = Cart.objects.filter(user=request.user)
     if request.method == 'POST':
         if cart_items:
-            # Generate a single order number for the cart
             num_ordre = str(uuid4())
 
             for item in cart_items:
