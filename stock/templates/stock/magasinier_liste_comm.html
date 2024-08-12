@@ -51,7 +51,9 @@
                 <a href="{% url 'modifier_commande' order.id %}" class="btn btn-primary">Modifier</a> 
             </li>
         {% empty %}
-            <li class="list-group-item">Aucune commande trouvée.</li>
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">Aucune commande trouvée.</div>
+        </div>
         {% endfor %}
     </ul>
 </div>
