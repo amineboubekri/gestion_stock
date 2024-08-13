@@ -55,12 +55,19 @@ class Commande(models.Model):
     cart_id = models.UUIDField(default=uuid4, editable=False)  
     raison_refus = models.TextField(blank=True, null=True)
 
+class Fournisseur(models.Model):
+    nom = models.CharField(max_length=255)
+    fax = models.CharField(max_length=50)
+    adresse = models.CharField(max_length=255)
+    email = models.EmailField()
+    telephone = models.CharField(max_length=50)
 
 class Entree(models.Model):
     produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
     quantite = models.PositiveIntegerField()
     prix_achat = models.DecimalField(max_digits=10, decimal_places=2)
     date_entree = models.DateTimeField()
+    fournisseur = models.ForeignKey(Fournisseur, on_delete=models.CASCADE)    
 
 class Cart(models.Model):
     user = models.ForeignKey(Personne, on_delete=models.CASCADE)
