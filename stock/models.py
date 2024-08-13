@@ -56,14 +56,6 @@ class Commande(models.Model):
     raison_refus = models.TextField(blank=True, null=True)
 
 
-
-class Fournisseur(models.Model):
-    nom = models.CharField(max_length=255)
-    fax = models.CharField(max_length=50)
-    adresse = models.CharField(max_length=255)
-    email = models.EmailField()
-    telephone = models.CharField(max_length=50)
-
 class Entree(models.Model):
     produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
     quantite = models.PositiveIntegerField()
