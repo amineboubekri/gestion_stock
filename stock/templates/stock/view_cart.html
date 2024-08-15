@@ -1,21 +1,23 @@
 {% extends 'employe_base.html' %}
 {% block content %}
-<h2>Votre Panier</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Produit</th>
-            <th>Quantité</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in cart_items %}
-        <tr>
-            <td>{{ item.produit.designation }}</td>
-            <td>{{ item.quantite }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<a href="{% url 'place_order' %}">Passer la Commande</a>
+<div class="container mt-5">
+    <h2 class="mb-4">Votre Panier</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.produit.designation }}</td>
+                <td>{{ item.quantite }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'place_order' %}" class="btn btn-primary mt-3">Passer la Commande</a>
+</div>
 {% endblock %}
