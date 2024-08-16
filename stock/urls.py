@@ -30,5 +30,5 @@ urlpatterns = [
     path('modifier_produit/<int:product_id>/', views.modifier_produit, name='modifier_produit'),
     path('generate_cart_pdf/<str:num_ordre>/', views.generate_cart_pdf, name='generate_cart_pdf'),
     path('magasinier_orders/', views.magasinier_orders, name='magasinier_orders'),  
-
+    path('cart/delete/<int:item_id>/', views.delete_from_cart, name='delete_from_cart'),
 ]

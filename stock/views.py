@@ -474,3 +474,8 @@ def magasinier_orders(request):
         grouped_orders[order.num_ordre].append(order)
 
     return render(request, 'stock/liste_commandes_magasinier.html', {'grouped_orders': grouped_orders})
+
+def delete_from_cart(request, item_id):
+    item = get_object_or_404(Cart, id=item_id)
+    item.delete()
+    return redirect('add_to_cart')
