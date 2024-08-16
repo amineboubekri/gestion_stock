@@ -7,6 +7,7 @@
             <tr>
                 <th>Produit</th>
                 <th>Quantité</th>
+                <th>Action</th> <!-- New column for the delete action -->
             </tr>
         </thead>
         <tbody>
@@ -14,6 +15,12 @@
             <tr>
                 <td>{{ item.produit.designation }}</td>
                 <td>{{ item.quantite }}</td>
+                <td>
+                    <form action="{% url 'delete_from_cart' item.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
