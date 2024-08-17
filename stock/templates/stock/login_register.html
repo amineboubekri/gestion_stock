@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Connexion et Inscription{% endblock %}
+{% block title %}Connexion{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="cont">
         <div class="form sign-in">
-            <h2>Welcome</h2>
+            <h2>Bonjour</h2>
             <form method="post" class="mt-4">
                 {% csrf_token %}
                 <label>
@@ -16,7 +17,7 @@
                     <span>{{ login_form.password.label_tag }}</span>
                     {{ login_form.password }}
                 </label>
-                <button type="submit" name="login" class="submit">Sign In</button>
+                <button type="submit" name="login" class="submit">Se connecter</button>
             </form>
             {% if form.errors %}
             <div class="alert alert-danger">
@@ -33,67 +34,6 @@
             </div>
             {% endif %}
         </div>
-        <div class="sub-cont">
-            <div class="img">
-                <div class="img__text m--up">
-                    <h3>Vous avez pas un compte | S'inscrire</h3>
-                </div>
-                <div class="img__text m--in">
-                    <h3>Vous avez un compte | Se connecter</h3>
-                </div>
-                <div class="img__btn">
-                    <span class="m--up">Creer</span>
-                    <span class="m--in">Connecter</span>
-                </div>
-            </div>
-            <div class="form sign-up">
-                <h2>Create your Account</h2>
-                <form method="post" class="mt-4">
-                    {% csrf_token %}
-                    <label>
-                        <span>{{ register_form.username.label_tag }}</span>
-                        {{ register_form.username }}
-                    </label>
-                    <label>
-                        <span>{{ register_form.email.label_tag }}</span>
-                        {{ register_form.email }}
-                    </label>
-                    <label>
-                        <span>{{ register_form.password1.label_tag }}</span>
-                        {{ register_form.password1 }}
-                    </label>
-                    <label>
-                        <span>{{ register_form.password2.label_tag }}</span>
-                        {{ register_form.password2 }}
-                    </label>
-                    <label>
-                        <span>{{ register_form.role.label_tag }}</span>
-                        {{ register_form.role }}
-                    </label>
-                    <button type="submit" name="register" class="submit">Sign Up</button>
-                </form>
-                {% if form.errors %}
-                <div class="alert alert-danger">
-                    <ul>
-                        {% for field in form %}
-                            {% for error in field.errors %}
-                                <li>{{ field.label }}: {{ error }}</li>
-                            {% endfor %}
-                        {% endfor %}
-                        {% for error in form.non_field_errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-            </div>
-        </div>
     </div>
 </div>
-
-<script>
-    document.querySelector('.img__btn').addEventListener('click', function() {
-        document.querySelector('.cont').classList.toggle('s--signup');
-    });
-</script>
 {% endblock %}

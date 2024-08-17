@@ -500,7 +500,7 @@ def liste_employes(request):
     if request.user.role != 'admin':
         return redirect('home')
     
-    employes = Personne.objects.all() 
+    employes = Personne.objects.filter(role='employe') 
     return render(request, 'stock/liste_employes.html', {'employes': employes})
 
 @login_required
