@@ -4,8 +4,8 @@
 
 {% block content %}
 <div class="container">
-    <div class="cont">
-        <div class="form sign-in">
+    <div class="cont" style="display: flex; justify-content: center; align-items: center; min-height: 50vh;">
+        <div class="form sign-in" style="max-width: 400px; width: 100%;">
             <h2>Bonjour</h2>
             <form method="post" class="mt-4">
                 {% csrf_token %}
