@@ -49,10 +49,10 @@
             </div>
             <ul class="list-unstyled components">
                 <li>
-                    <a href="#commandeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle sidebar-text right-arrow sidebar-button">
+                    <a href="#produitsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle sidebar-text right-arrow sidebar-button">
                         <i class="fas fa-cash-register"></i> Produits
                     </a>
-                    <ul class="collapse list-unstyled" id="commandeSubmenu">
+                    <ul class="collapse list-unstyled" id="produitsSubmenu">
                         <li>
                             <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'add_product' %}">
                                 <i class="fas fa-dot-circle"></i> Nouveau Produit
@@ -66,18 +66,18 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#commandeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle sidebar-text right-arrow sidebar-button">
-                        <i class="fas fa-cash-register"></i> Employes
+                    <a href="#employesSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle sidebar-text right-arrow sidebar-button">
+                        <i class="fas fa-cash-register"></i> Employés
                     </a>
-                    <ul class="collapse list-unstyled" id="commandeSubmenu">
+                    <ul class="collapse list-unstyled" id="employesSubmenu">
                         <li>
                             <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'ajouter_employe' %}">
-                                <i class="fas fa-dot-circle"></i> Ajouter employe
+                                <i class="fas fa-dot-circle"></i> Ajouter Employé
                             </a>
                         </li>
                         <li>
                             <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'liste_employes' %}">
-                                <i class="fas fa-dot-circle"></i> Liste des employes
+                                <i class="fas fa-dot-circle"></i> Liste des Employés
                             </a>
                         </li>
                     </ul>
