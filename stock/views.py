@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, CommandeForm, ProduitForm, CommandeUpdateForm, AjoutStockForm, CommandeAvantValidation, CartAddProductForm
-from .models import Commande, Produit, Entree, Cart
+from .models import Commande, Produit, Entree, Cart, Personne
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from reportlab.pdfgen import canvas
@@ -478,4 +478,47 @@ def magasinier_orders(request):
 def delete_from_cart(request, item_id):
     item = get_object_or_404(Cart, id=item_id)
     item.delete()
-    return redirect('add_to_cart')
+    return redirect('view_cart')
+
+@login_required
+def ajouter_employe(request):
+    if request.user.role != 'admin':
+        return redirect('home') 
+    
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('employee_list')  
+    else:
+        form = CustomUserCreationForm()
+    
+    return render(request, 'stock/ajouter_employe.html', {'form': form})
+
+@login_required
+def liste_employes(request):
+    if request.user.role != 'admin':
+        return redirect('home')
+    
+    employes = Personne.objects.filter(role='employe')  
+    return render(request, 'stock/liste_employes.html', {'employes': employes})
+
+@login_required
+def modifier_employe(request, employe_id):
+    employe = get_object_or_404(Personne, id=employe_id)
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST, instance=employe)
+        if form.is_valid():
+            form.save()
+            return redirect('liste_employes')
+    else:
+        form = CustomUserCreationForm(instance=employe)
+    return render(request, 'stock/modifier_employe.html', {'form': form, 'employe': employe})
+
+@login_required
+def supprimer_employe(request, employe_id):
+    employe = get_object_or_404(Personne, id=employe_id)
+    if request.method == 'POST':
+        employe.delete()
+        return redirect('liste_employes')
+    return render(request, 'stock/supprimer_employe.html', {'employe': employe})

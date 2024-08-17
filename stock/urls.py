@@ -31,4 +31,8 @@ urlpatterns = [
     path('generate_cart_pdf/<str:num_ordre>/', views.generate_cart_pdf, name='generate_cart_pdf'),
     path('magasinier_orders/', views.magasinier_orders, name='magasinier_orders'),  
     path('cart/delete/<int:item_id>/', views.delete_from_cart, name='delete_from_cart'),
+    path('ajouter-employe/', views.ajouter_employe, name='ajouter_employe'),
+    path('liste-employes/', views.liste_employes, name='liste_employes'),
+    path('modifier-employe/<int:employe_id>/', views.modifier_employe, name='modifier_employe'),
+    path('supprimer-employe/<int:employe_id>/', views.supprimer_employe, name='supprimer_employe'),
 ]

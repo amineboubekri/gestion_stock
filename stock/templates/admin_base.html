@@ -65,6 +65,23 @@
                         </li>
                     </ul>
                 </li>
+                <li>
+                    <a href="#commandeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle sidebar-text right-arrow sidebar-button">
+                        <i class="fas fa-cash-register"></i> Employes
+                    </a>
+                    <ul class="collapse list-unstyled" id="commandeSubmenu">
+                        <li>
+                            <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'ajouter_employe' %}">
+                                <i class="fas fa-dot-circle"></i> Ajouter employe
+                            </a>
+                        </li>
+                        <li>
+                            <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'liste_employes' %}">
+                                <i class="fas fa-dot-circle"></i> Liste des employes
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="bottomleft">
                     <a href="{% url 'logout' %}" class="sidebar-text right-arrow sidebar-button">
                         Logout

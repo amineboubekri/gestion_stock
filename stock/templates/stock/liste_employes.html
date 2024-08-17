@@ -1,0 +1,30 @@
+{% extends 'admin_base.html' %}
+
+{% block content %}
+  <h2>Liste des Employés</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nom d'utilisateur</th>
+        <th>Email</th>
+        <th>Rôle</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for employe in employes %}
+      <tr>
+        <td>{{ employe.id }}</td>
+        <td>{{ employe.username }}</td>
+        <td>{{ employe.email }}</td>
+        <td>{{ employe.get_role_display }}</td>
+        <td>
+          <a href="{% url 'modifier_employe' employe.id %}" class="btn btn-primary">Modifier</a>
+          <a href="{% url 'supprimer_employe' employe.id %}" class="btn btn-danger">Supprimer</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
