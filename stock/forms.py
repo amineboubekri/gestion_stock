@@ -5,7 +5,7 @@ from .models import Personne, Commande, Produit, Entree, CommandeAvantValidation
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = Personne
-        fields = ('username', 'password1', 'password2', 'role')
+        fields = ('username', 'password1', 'password2', 'role', 'email')
 
 class CustomAuthenticationForm(AuthenticationForm):
     class Meta:

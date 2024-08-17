@@ -489,7 +489,7 @@ def ajouter_employe(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('employee_list')  
+            return redirect('liste_employes')  
     else:
         form = CustomUserCreationForm()
     
@@ -500,7 +500,7 @@ def liste_employes(request):
     if request.user.role != 'admin':
         return redirect('home')
     
-    employes = Personne.objects.filter(role='employe')  
+    employes = Personne.objects.all() 
     return render(request, 'stock/liste_employes.html', {'employes': employes})
 
 @login_required
