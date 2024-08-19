@@ -1,3 +1,4 @@
+/* Container Styles */
 .container {
   background-color: #f9f9f9;
   border-radius: 8px;
@@ -10,6 +11,7 @@ h2 {
   color: #333;
 }
 
+/* List Group Item */
 .list-group-item {
   background-color: #fff;
   border: 1px solid #ddd;
@@ -22,6 +24,7 @@ h2 {
   font-size: 16px;
 }
 
+/* Badge Styles */
 .badge-primary {
   background-color: #007bff;
   color: #fff;
@@ -32,8 +35,33 @@ h2 {
   padding: 5px 10px;
 }
 
+/* Product Image */
 .product-image {
   width: 50px;
   height: auto; 
 }
 
+/* Media Queries */
+@media (max-width: 768px) {
+  .container {
+      padding: 15px;
+  }
+  
+  h2 {
+      font-size: 18px;
+  }
+  
+  .list-group-item {
+      padding: 10px;
+      font-size: 14px;
+  }
+  
+  .badge-pill {
+      padding: 3px 8px;
+      font-size: 12px;
+  }
+  
+  .product-image {
+      width: 40px;
+  }
+}

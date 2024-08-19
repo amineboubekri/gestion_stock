@@ -1,27 +1,33 @@
-#dialogoverlay{
-	display: none;
-	opacity: .8;
-	position: fixed;
-	top: 0px;
-	left: 0px;
-	background: #000;
-	width: 100%;
-	z-index: 10;
+/* Dialog Overlay */
+#dialogoverlay {
+    display: none;
+    opacity: .8;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background: #000;
+    width: 100%;
+    z-index: 10;
 }
-#dialogbox{
-	display: none;
-	position: fixed;
-	background:  #ff3c16 ;
+
+/* Dialog Box */
+#dialogbox {
+    display: none;
+    position: fixed;
+    background:  #ff3c16 ;
     border-radius: 7px;
-	width: 550px;
-	z-index: 10;
+    width: 90%;
+    max-width: 550px;
+    z-index: 10;
 }
+
 #dialogbox > div { 
     background:#000; 
     margin: 4px; 
     border-radius: 7px;
 }
-#dialogbox > div > #dialogboxhead{ 
+
+#dialogbox > div > #dialogboxhead { 
     background: #000; 
     font-size: 1.8rem; 
     padding: 10px; 
@@ -29,15 +35,32 @@
     font-weight: bold; 
     border-radius: 7px;
 }
-#dialogbox > div > #dialogboxbody{ 
+
+#dialogbox > div > #dialogboxbody { 
     background:#000; 
     font-size: 1.5rem; 
     padding: 20px; 
     color:#fff; 
 }
-#dialogbox > div > #dialogboxfoot{ 
+
+#dialogbox > div > #dialogboxfoot { 
     background: #000; 
     padding: 10px; 
     color:#fff;
     border-radius: 7px;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    #dialogbox {
+        width: 90%;
+    }
+
+    #dialogbox > div > #dialogboxhead {
+        font-size: 1.5rem;
+    }
+
+    #dialogbox > div > #dialogboxbody {
+        font-size: 1.2rem;
+    }
 }
