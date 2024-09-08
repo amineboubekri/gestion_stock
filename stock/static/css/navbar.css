@@ -1,0 +1,137 @@
+/* Reset and Box-Sizing */
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar Container */
+.navbar {
+    width: 100%;
+    background: #d4af7a;
+    color: #fff;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Navbar Brand */
+.navbar-brand {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Navbar Links */
+.navbar-links {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-links a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 1.1em;
+    transition: color 0.3s;
+}
+
+.navbar-links a:hover {
+    color: #000;
+}
+
+/* Navbar Toggle Button (for mobile) */
+.navbar-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    font-size: 1.5em;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .navbar-links {
+        display: none;
+    }
+    .navbar-toggle {
+        display: block;
+    }
+    .navbar-toggle.active + .navbar-links {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        right: 20px;
+        background: #d4af7a;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+    }
+    .navbar-links a {
+        margin: 10px 0;
+    }
+}
+
+/* Group styling for navbar lists */
+.navbar-group {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-group li {
+    margin-left: 20px;
+}
+
+.navbar-group li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1em;
+    transition: color 0.3s;
+}
+
+.navbar-group li a:hover {
+    color: #000;
+}
+
+/* Mobile view styling */
+@media (max-width: 768px) {
+    .navbar-group {
+        display: block;
+    }
+
+    .navbar-group li {
+        margin: 10px 0;
+    }
+
+    .navbar-toggle.active + .navbar-links {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        right: 20px;
+        background: #d4af7a;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+    }
+
+    .navbar-group li {
+        margin-left: 0;
+    }
+}
